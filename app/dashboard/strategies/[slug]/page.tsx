@@ -8,8 +8,8 @@ import {
   getStrategyDetail,
   toStrategyCardProps,
 } from "@/lib/strategies-service";
-import { ExecuteStrategyButton } from "@/components/dashboard/ExecuteStrategyButton";
-import StrategyCard from "@/components/dashboard/StrategyCard";
+import { ExecuteStrategyButton } from "../../../components/dashboard/ExecuteStrategyButton";
+import StrategyCard from "../../../components/dashboard/StrategyCard";
 
 interface StrategyPageProps {
   params: Promise<{ slug: string }>;

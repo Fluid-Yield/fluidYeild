@@ -9,11 +9,12 @@ import {
   useWriteContract,
 } from "wagmi";
 
-import { Button } from "@/components/ui/button";
-import { nirContracts } from "@/lib/contracts";
+import { Button } from "../../components/ui/button";
+
 import { erc20Abi } from "@/lib/erc20-abi";
 import { useTokenDecimals } from "@/lib/useTokenDecimals";
-import { useToast } from "@/components/ui/toast-provider";
+import { fyContracts } from "@/lib/contracts";
+import { useToast } from "../../components/ui/toast-provider";
 
 interface ExecuteStrategyButtonProps {
   strategyId: number;
@@ -39,8 +40,8 @@ export function ExecuteStrategyButton({
     refetch: refetchPosition,
     isLoading: positionLoading,
   } = useReadContract({
-    abi: nirContracts.strategyVault.abi,
-    address: nirContracts.strategyVault.address,
+    abi: fyContracts.strategyVault.abi,
+    address: fyContracts.strategyVault.address,
     functionName: "getUserPosition",
     args: address ? [address, BigInt(strategyId)] : undefined,
     query: {
@@ -108,7 +109,7 @@ export function ExecuteStrategyButton({
         abi: erc20Abi,
         address: inputToken as `0x${string}`,
         functionName: "approve",
-        args: [nirContracts.strategyVault.address, amount],
+        args: [fyContracts.strategyVault.address, amount],
       });
 
       if (publicClient) {
@@ -116,8 +117,8 @@ export function ExecuteStrategyButton({
       }
 
       const executeHash = await writeContractAsync({
-        abi: nirContracts.strategyVault.abi,
-        address: nirContracts.strategyVault.address,
+        abi: fyContracts.strategyVault.abi,
+        address: fyContracts.strategyVault.address,
         functionName: "executeStrategy",
         args: [BigInt(strategyId), amount, slippageValue],
       });
@@ -174,8 +175,8 @@ export function ExecuteStrategyButton({
 
     try {
       const exitHash = await writeContractAsync({
-        abi: nirContracts.strategyVault.abi,
-        address: nirContracts.strategyVault.address,
+        abi: fyContracts.strategyVault.abi,
+        address: fyContracts.strategyVault.address,
         functionName: "exitStrategy",
         args: [BigInt(strategyId)],
       });

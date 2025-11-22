@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import ConnectWallet from "@/components/ConnectWallet";
+
 import nir_logo from "@/public/nirLogoWhite.png";
+import ConnectWallet from "./ConnectWallet";
 
 interface HeaderProps {
   onMenuClick?: () => void;

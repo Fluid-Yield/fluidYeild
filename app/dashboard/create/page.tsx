@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { decodeEventLog } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
-import ProgressSteps from "@/components/dashboard/ProgressSteps";
+import ProgressSteps from "@/app/components/dashboard/ProgressSteps";
 import { StrategyFromAi } from "@/lib/strategy-model";
 import { TOKENS, TokenKey } from "@/lib/tokens";
 import { buildStepsFromAi } from "@/lib/encode-strategy";
-import { useToast } from "@/components/ui/toast-provider";
-import { Button } from "@/components/ui/button";
+
 import { fyContracts } from "@/lib/contracts";
+import { Button } from "../../components/ui/button";
+import { useToast } from "../../components/ui/toast-provider";
 
 const STEPS = [
   { label: "Prompt" },
