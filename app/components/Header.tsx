@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import ConnectWallet from "@/app/components/ConnectWallet";
+import ConnectWallet from "@/components/ConnectWallet";
 import nir_logo from "@/public/nirLogoWhite.png";
 
 interface HeaderProps {
@@ -56,11 +56,11 @@ const Header = ({ onMenuClick }: HeaderProps) => {
 
         <div className="w-[140px] shrink-0">
           <Select>
-            <SelectTrigger className="w-full bg-[#EDFCFE0F] text-[var(--app-text)] rounded-full border-none outline-none focus:outline-none focus:ring-0 focus:border-none px-4 py-6">
+            <SelectTrigger className="w-full bg-[#EDFCFE0F]  rounded-full border-none outline-none focus:outline-none focus:ring-0 focus:border-none px-4 py-6">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
 
-            <SelectContent className="bg-[var(--app-bg)] text-[var(--app-text)] border border-[var(--app-text)]/10 outline-none focus:outline-none focus:ring-0 focus:border-none">
+            <SelectContent className="bg-(--app-bg)  text-foreground border border-border/10 outline-none focus:outline-none focus:ring-0 focus:border-none">
               <SelectItem value="newest">Newest</SelectItem>
               <SelectItem value="oldest">Oldest</SelectItem>
               <SelectItem value="popular">Popular</SelectItem>

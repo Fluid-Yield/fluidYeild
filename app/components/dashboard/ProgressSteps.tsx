@@ -12,9 +12,9 @@ interface ProgressStepsProps {
 }
 
 const baseCircleClasses =
-  "grid h-12 w-12 place-items-center rounded-full border border-accent/15 bg-accent/5 text-[16px] font-semibold text-muted-foreground shadow-sm transition-all";
+  "grid h-12 w-12 place-items-center rounded-full border border-accent/15 bg-accent/5 text-[16px] font-semibold text-muted-foreground/50 shadow-sm transition-all";
 const activeCircleClasses =
-  "border-none text-white bg-accent shadow-[0_8px_18px_rgba(194,24,91,0.3)]";
+  "border-none !text-foreground bg-accent shadow-[0_8px_18px_rgba(194,24,91,0.3)]";
 
 const ProgressSteps = ({ steps, currentIndex }: ProgressStepsProps) => {
   return (

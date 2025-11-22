@@ -8,8 +8,8 @@ import {
   getStrategyDetail,
   toStrategyCardProps,
 } from "@/lib/strategies-service";
-import { ExecuteStrategyButton } from "@/app/components/dashboard/ExecuteStrategyButton";
-import StrategyCard from "@/app/components/dashboard/StrategyCard";
+import { ExecuteStrategyButton } from "@/components/dashboard/ExecuteStrategyButton";
+import StrategyCard from "@/components/dashboard/StrategyCard";
 
 interface StrategyPageProps {
   params: Promise<{ slug: string }>;
@@ -75,12 +75,12 @@ export default async function StrategyDetailPage({
               </Link>
 
               <div className="flex flex-col gap-1 flex-1 sm:flex-initial">
-                <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold tracking-[0.01em] text-[#F2F4F5] leading-tight">
+                <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-semibold tracking-[0.01em] text-[#1A1A1A] leading-tight">
                   {overview.name}
                 </h1>
 
                 <div className="flex items-center gap-2 w-fit text-[11px] sm:text-[12px] rounded-full bg-[#EDFCFE0F] px-3 sm:px-4 py-1 border border-[#EDFCFE0F] mt-1">
-                  <span className="text-[#F2F4F5]/70">Creator:</span>
+                  <span className="text-[#1A1A1A]/70">Creator:</span>
                   <Image
                     src="/icons/user_icon.svg"
                     alt="Creator"
@@ -107,11 +107,11 @@ export default async function StrategyDetailPage({
                       className="w-4 h-4 sm:w-5 sm:h-5"
                     />
 
-                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.01em] text-[#F2F4F5]">
+                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.01em] text-[#E7FDFF]">
                       Type
                     </span>
                   </div>
-                  <h2 className="text-[11px] sm:text-[12px] font-semibold tracking-[0.01em] text-[#F2F4F5]">
+                  <h2 className="text-[11px] sm:text-[12px] font-semibold tracking-[0.01em] text-[#E7FDFF]">
                     {type}
                   </h2>
                 </div>
@@ -126,7 +126,7 @@ export default async function StrategyDetailPage({
                       className="w-4 h-4 sm:w-5 sm:h-5"
                     />
 
-                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.01em] text-[#F2F4F5]">
+                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.01em] text-[#E7FDFF]">
                       Risk
                     </span>
                   </div>
@@ -145,7 +145,7 @@ export default async function StrategyDetailPage({
                       className="w-4 h-4 sm:w-5 sm:h-5"
                     />
 
-                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.01em] text-[#F2F4F5]">
+                    <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.01em] text-[#E7FDFF]">
                       Performance
                     </span>
                   </div>
@@ -175,10 +175,10 @@ export default async function StrategyDetailPage({
         <section className="mb-12 sm:mb-20 rounded-[20px] sm:rounded-[24px] border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-6 md:px-10 py-6 sm:py-8 shadow-[0_28px_56px_rgba(6,24,26,0.35)]">
           <div className="grid gap-8 sm:gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start">
             <div className="space-y-3 sm:space-y-4">
-              <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#577578]">
+              <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#4A6B6E]">
                 Description
               </p>
-              <p className="text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-[#F2F4F5]">
+              <p className="text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-[#1A1A1A]">
                 {description}
               </p>
             </div>
@@ -186,24 +186,24 @@ export default async function StrategyDetailPage({
             <span className="hidden h-full w-1 rounded-full bg-[#1DD43914] md:block" />
 
             <div className="space-y-3 sm:space-y-4">
-              <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#577578]">
+              <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#4A6B6E]">
                 Steps
               </p>
-              <ol className="space-y-1 text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-[#F2F4F5]">
+              <ol className="space-y-1 text-[14px] sm:text-[16px] leading-6 sm:leading-7 text-[#1A1A1A]">
                 {ai?.steps && ai.steps.length > 0 ? (
                   ai.steps.map((step, index) => (
                     <li key={`${overview.id}-ai-step-${index}`}>
-                      <span className="text-[#F2F4F5] ml-2 sm:ml-3">
+                      <span className="text-[#1A1A1A] ml-2 sm:ml-3">
                         {index + 1}.
                       </span>{" "}
-                      <span className="uppercase text-[11px] tracking-[0.16em] text-[#5efbff] mr-2">
+                      <span className="uppercase text-[11px] tracking-[0.16em] text-[#0A9BA0] mr-2">
                         {step.action}
                       </span>
                       {step.label ?? "Generated step"}
                     </li>
                   ))
                 ) : (
-                  <li className="text-[13px] sm:text-[14px] text-[#ADBEBF]">
+                  <li className="text-[13px] sm:text-[14px] text-[#4A6B6E]">
                     No AI step metadata stored for this strategy.
                   </li>
                 )}
@@ -215,10 +215,10 @@ export default async function StrategyDetailPage({
         <section>
           <div className="mb-6 sm:mb-7 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
-              <h2 className="text-[20px] sm:text-[24px] font-semibold tracking-[0.01em] text-[#F2F4F5]">
+              <h2 className="text-[20px] sm:text-[24px] font-semibold tracking-[0.01em] text-[#1A1A1A]">
                 More Strategies
               </h2>
-              <p className="text-[12px] sm:text-[14px] text-[#ADBEBF]">
+              <p className="text-[12px] sm:text-[14px] text-[#4A6B6E]">
                 Here are more similar strategies curated for you.
               </p>
             </div>

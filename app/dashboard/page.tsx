@@ -23,7 +23,7 @@ export default async function DashboardHomePage() {
               <h2 className="text-xl sm:text-2xl font-semibold text-foreground">
                 Featured Strategy
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground/70">
                 Top-performing DeFi strategy curated by experts
               </p>
             </div>
@@ -39,7 +39,7 @@ export default async function DashboardHomePage() {
                     {featured?.title ?? "No strategies yet"}
                   </h1>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                <div className="flex items-center gap-2 text-xs text-foreground/70 mb-4">
                   <span>Creator:</span>
                   {featured && (
                     <span className="text-accent font-medium">
@@ -51,7 +51,7 @@ export default async function DashboardHomePage() {
 
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="flex flex-col gap-1 min-w-[100px] px-4 py-3 rounded border border-border bg-muted/30">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wide">
                     Type
                   </span>
                   <span className="text-sm font-semibold text-foreground">
@@ -60,7 +60,7 @@ export default async function DashboardHomePage() {
                 </div>
 
                 <div className="flex flex-col gap-1 min-w-[100px] px-4 py-3 rounded border border-border bg-muted/30">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wide">
                     Risk
                   </span>
                   <span className="text-sm font-semibold text-[#FCD34D]">
@@ -69,7 +69,7 @@ export default async function DashboardHomePage() {
                 </div>
 
                 <div className="flex flex-col gap-1 min-w-[100px] px-4 py-3 rounded border border-border bg-muted/30">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  <span className="text-xs font-medium text-foreground/70 uppercase tracking-wide">
                     Performance
                   </span>
                   {featured && (
@@ -99,14 +99,14 @@ export default async function DashboardHomePage() {
             <h2 className="text-xl sm:text-2xl font-semibold text-foreground">
               All Strategies
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground/70">
               Browse and compare available DeFi strategies
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
             {cards.length === 0 ? (
-              <p className="text-[13px] sm:text-[14px] text-muted-foreground col-span-full">
+              <p className="text-[13px] sm:text-[14px] text-foreground/70 col-span-full">
                 No strategies have been created yet. Use the Create page to let
                 Nir build one from your prompt.
               </p>

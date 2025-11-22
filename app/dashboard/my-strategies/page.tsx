@@ -5,7 +5,7 @@ import {
   getUserStrategiesByUserId,
   toStrategyCardProps,
 } from "@/lib/strategies-service";
-import { MyStrategiesClient } from "@/app/components/dashboard/MyStrategiesClient";
+import { MyStrategiesClient } from "@/components/dashboard/MyStrategiesClient";
 
 export default async function MyStrategiesPage() {
   const cookieStore = await cookies();

@@ -4,18 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { decodeEventLog } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
-import ProgressSteps from "@/app/components/dashboard/ProgressSteps";
+import ProgressSteps from "@/components/dashboard/ProgressSteps";
 import { StrategyFromAi } from "@/lib/strategy-model";
 import { TOKENS, TokenKey } from "@/lib/tokens";
 import { buildStepsFromAi } from "@/lib/encode-strategy";
-import { useToast } from "@/app/components/ui/toast-provider";
-import { Button } from "@/app/components/ui/button";
+import { useToast } from "@/components/ui/toast-provider";
+import { Button } from "@/components/ui/button";
 import { fyContracts } from "@/lib/contracts";
 
 const STEPS = [
   { label: "Prompt" },
   { label: "AI Strategy" },
-  { label: "Deploy to BNB Testnet" },
+  { label: "Deploy to flare" },
 ];
 
 export default function CreateStrategyPage() {
@@ -176,19 +176,19 @@ export default function CreateStrategyPage() {
       <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8">
         <div className="mb-4 sm:mb-8 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:justify-between">
           <div className="mb-8 sm:mb-12">
-            <h1 className="text-[28px] sm:text-[32px] lg:text-4xl font-semibold text-[#E7FDFF]">
+            <h1 className="text-[28px] sm:text-[32px] lg:text-4xl font-semibold text-[#1A1A1A]">
               Create New Strategy
             </h1>
-            <p className="mt-3 sm:mt-4 text-[14px] sm:text-[16px] text-[#88AEB1]">
-              Describe the strategy you want. Nir will turn it into executable
-              steps on BNB testnet.
+            <p className="mt-3 sm:mt-4 text-[14px] sm:text-[16px] text-[#4A6B6E]">
+              Describe the strategy you want. Fluid Yield will turn it into
+              executable steps on flare.
             </p>
           </div>
 
           <Button
             type="button"
             variant="ghost"
-            className="rounded-full border border-[#1FE9F7]/30 bg-[#090909] px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-xs sm:text-sm font-semibold text-[#1FE9F7] transition hover:text-[#E2FEFF] cursor-pointer w-full sm:w-auto"
+            className="rounded-full border border-accent/30 text-white bg-accent px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-xs sm:text-sm font-semibold  transition hover:text-accent-foreground hover:bg-accent/10 cursor-pointer w-full sm:w-auto"
             disabled
           >
             Save Draft (coming soon)
@@ -203,17 +203,17 @@ export default function CreateStrategyPage() {
         </div>
 
         <section className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-[0_24px_48px_rgba(6,24,26,0.45)] backdrop-blur-sm">
-          <h2 className="mb-6 sm:mb-8 text-xs sm:text-sm text-center font-semibold uppercase tracking-[0.18em] text-[#F2F4F5]">
-            Tell Nir what you want to build
+          <h2 className="mb-6 sm:mb-8 text-xs sm:text-sm text-center font-semibold uppercase tracking-[0.18em] text-[#1A1A1A]">
+            Tell Fluid Yield what you want to build
           </h2>
 
           <label className="flex flex-col gap-2 sm:gap-3">
-            <span className="text-xs sm:text-sm uppercase tracking-[0.18em] text-[#89A8AA]">
+            <span className="text-xs sm:text-sm uppercase tracking-[0.18em] text-[#4A6B6E]">
               Strategy Idea (prompt)
             </span>
             <textarea
               rows={5}
-              className="rounded-xl sm:rounded-2xl border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-5 py-3 sm:py-4 text-[14px] sm:text-[15px] text-[#CDEFF1] placeholder:text-[#597778] focus:border-[#1FE9F7] focus:outline-none focus:ring-0 resize-none"
+              className="rounded-xl sm:rounded-2xl border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-5 py-3 sm:py-4 text-[14px] sm:text-[15px] text-[#1A1A1A] placeholder:text-[#6B8A8D] focus:border-[#1FE9F7] focus:outline-none focus:ring-0 resize-none"
               placeholder="E.g. A medium-risk looping strategy using WBNB as input, swapping into USDT then supplying to Venus, with auto-withdraw to BUSD when markets are volatile."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -221,16 +221,15 @@ export default function CreateStrategyPage() {
           </label>
 
           <div className="mt-6 sm:mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-[12px] sm:text-[13px] text-[#88AEB1]">
+            <div className="text-[12px] sm:text-[13px] text-[#4A6B6E]">
               {generating ? (
                 <span>
-                  Computing contract inputs and strategy steps for BNB
-                  testnet...
+                  Computing contract inputs and strategy steps for flare
                 </span>
               ) : (
                 <span>
-                  Nir will infer tokens, Venus markets, and steps based on your
-                  description.
+                  Fluid Yield will infer tokens, Venus markets, and steps based
+                  on your description.
                 </span>
               )}
             </div>
@@ -238,7 +237,7 @@ export default function CreateStrategyPage() {
             <Button
               type="button"
               variant="default"
-              className="text-xs sm:text-sm font-medium text-[#090909] bg-[#1FE9F7] hover:bg-[#1FE9F7]/80 rounded-lg px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-center cursor-pointer w-full sm:w-auto"
+              className="text-xs sm:text-sm font-medium text-white bg-accent hover:bg-accent/90 rounded-lg px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-center cursor-pointer w-full sm:w-auto"
               onClick={handleGenerate}
               disabled={generating || !prompt.trim()}
             >
@@ -249,32 +248,32 @@ export default function CreateStrategyPage() {
           {aiStrategy && (
             <div className="mt-8 sm:mt-10 grid gap-6 sm:gap-8 md:grid-cols-[1.4fr_minmax(0,1fr)] items-start">
               <div className="space-y-3 sm:space-y-4">
-                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#89A8AA]">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#4A6B6E]">
                   AI Strategy Preview
                 </p>
-                <h3 className="text-[18px] sm:text-[20px] font-semibold text-[#F2F4F5]">
+                <h3 className="text-[18px] sm:text-[20px] font-semibold text-[#1A1A1A]">
                   {aiStrategy.name}
                 </h3>
-                <p className="text-[13px] sm:text-[14px] leading-6 text-[#CDEFF1]">
+                <p className="text-[13px] sm:text-[14px] leading-6 text-[#2A2A2A]">
                   {aiStrategy.summary}
                 </p>
               </div>
 
               <div className="space-y-3 sm:space-y-4 rounded-2xl border border-[#EDFCFE0F] bg-[#070B0B] px-4 sm:px-5 py-4 sm:py-5">
-                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#89A8AA]">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#B8D4D7]">
                   Deployment Details
                 </p>
                 <div className="space-y-1 text-[13px] sm:text-[14px] text-[#E7FDFF]">
                   <p>
-                    <span className="text-[#89A8AA]">Input Token:</span>{" "}
+                    <span className="text-[#B8D4D7]">Input Token:</span>{" "}
                     {aiStrategy.inputToken}
                   </p>
                   <p>
-                    <span className="text-[#89A8AA]">Risk:</span>{" "}
+                    <span className="text-[#B8D4D7]">Risk:</span>{" "}
                     {aiStrategy.riskLevel}
                   </p>
                   <p>
-                    <span className="text-[#89A8AA]">Steps:</span>{" "}
+                    <span className="text-[#B8D4D7]">Steps:</span>{" "}
                     {aiStrategy.steps.length}
                   </p>
                 </div>
@@ -287,20 +286,20 @@ export default function CreateStrategyPage() {
                   disabled={deploying || isPending}
                 >
                   {deploying || isPending
-                    ? "Deploying to BNB Testnet..."
+                    ? "Deploying to flare..."
                     : "Deploy Strategy"}
                 </Button>
               </div>
 
               <div className="md:col-span-2 mt-4 sm:mt-6">
-                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#89A8AA] mb-2">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#4A6B6E] mb-2">
                   Execution Steps
                 </p>
-                <ol className="space-y-1 text-[13px] sm:text-[14px] text-[#F2F4F5]">
+                <ol className="space-y-1 text-[13px] sm:text-[14px] text-[#1A1A1A]">
                   {aiStrategy.steps.map((step, index) => (
                     <li key={index}>
-                      <span className="text-[#89A8AA] mr-2">{index + 1}.</span>
-                      <span className="uppercase text-[11px] tracking-[0.16em] text-[#5efbff] mr-2">
+                      <span className="text-[#4A6B6E] mr-2">{index + 1}.</span>
+                      <span className="uppercase text-[11px] tracking-[0.16em] text-[#0A9BA0] mr-2">
                         {step.action}
                       </span>
                       {step.label ?? "Generated step"}

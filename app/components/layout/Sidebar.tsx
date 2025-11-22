@@ -39,9 +39,8 @@ const TERTIARY_ITEMS = [
 ];
 
 const baseLinkClasses =
-  "relative flex items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-foreground/90 transition-all duration-150 ease-out hover:text-foreground";
-const activeLinkClasses =
-  "text-accent bg-accent/5 border border-accent/30 shadow-[0_0_20px_rgba(194,24,91,0.2)]";
+  "relative flex items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-foreground/90 transition-all duration-150 ease-out ";
+const activeLinkClasses = "text-white bg-accent";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -79,7 +78,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
           height={20}
           className={clsx(
             "h-5 w-5 transition-opacity",
-            isActive ? "opacity-100 brightness-150" : "opacity-70"
+            isActive ? "opacity-100" : "opacity-70"
           )}
           priority={isActive}
         />

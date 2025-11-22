@@ -8,16 +8,10 @@ import { ChevronDown } from "lucide-react";
 import { formatBalance } from "@/lib/utils";
 
 export const glowPillClasses =
-  "relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-lg border border-accent/30 px-10 py-3 text-[16px] font-medium tracking-[0.01em] text-accent transition-all duration-200 ease-out select-none bg-background shadow-[inset_0_0_14px_rgba(194,24,91,0.12)] hover:shadow-[inset_0_0_18px_rgba(194,24,91,0.18)] hover:text-accent-foreground hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent cursor-pointer";
+  "relative bg-accent text-white inline-flex items-center justify-center gap-3 overflow-hidden rounded-lg border  px-10 py-3 text-[16px] font-medium tracking-[0.01em]  transition-all duration-200 ease-out select-none  shadow-[inset_0_0_14px_rgba(194,24,91,0.12)] hover:shadow-[inset_0_0_18px_rgba(194,24,91,0.18)] hover:text-accent-foreground hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent cursor-pointer";
 
-export const glowPillOverlayClasses =
-  "pointer-events-none absolute inset-[2px] rounded-lg [background:linear-gradient(180deg,rgba(0,0,0,0.1),rgba(194,24,91,0.03)_45%,rgba(194,24,91,0.01)_75%,rgba(0,0,0,0.1))]";
-
-export const glowPillLabelClasses = "relative z-10";
-
-// Dark grey button style matching the design
 const darkButtonClasses =
-  "flex items-center px-1.5 sm:px-4 py-2 rounded-tr-lg! rounded-br-lg! rounded-lg sm:rounded-none bg-[#1A1A1A] text-white text-sm font-medium hover:bg-[#252525] transition-colors cursor-pointer border-none outline-none";
+  "flex items-center px-1.5 sm:px-4 py-2 rounded-tr-lg! rounded-br-lg! rounded-lg sm:rounded-none bg-background text-foreground text-sm font-medium hover:bg-accent/5 transition-colors cursor-pointer border-none outline-none";
 
 const ConnectWallet = () => {
   const { address, isConnected } = useAccount();
@@ -135,7 +129,7 @@ const ConnectWallet = () => {
                     <button
                       onClick={openAccountModal}
                       type="button"
-                      className={`${darkButtonClasses} bg-[#393a3e]! gap-1 sm:gap-2`}
+                      className={`${darkButtonClasses} gap-1 sm:gap-2`}
                     >
                       <div className="w-6 h-6 rounded-full flex items-center justify-center overflow-hidden">
                         <img
@@ -153,7 +147,7 @@ const ConnectWallet = () => {
                       <span className="text-base font-bold">
                         {account.displayName}
                       </span>
-                      <ChevronDown className="w-4 h-4 text-white" />
+                      <ChevronDown className="w-4 h-4 " />
                     </button>
                   </div>
                 </div>
