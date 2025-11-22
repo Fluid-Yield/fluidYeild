@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { ChartImage } from "./ChartImage";
 import type { StrategyCardProps } from "@/app/types/strategy-types";
-import { riskColor } from "@/utils/utils";
+import { riskColor } from "@/lib/utils";
 
 const StrategyCard = ({
   title,

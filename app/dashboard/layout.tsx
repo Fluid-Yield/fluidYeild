@@ -9,7 +9,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#050607] text-[#E3F6F7]">
+    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-text)]">
       <Header onMenuClick={() => setSidebarOpen(true)} />
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />

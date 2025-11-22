@@ -1,0 +1,14 @@
+{
+  "network": "bsc_testnet",
+  "chainId": 97,
+  "contracts": {
+    "StrategyVault": "0xb6D77Ad52A38a3338a54aC935C0Be18F8216C900",
+    "PancakeSwapConnector": "0x7A0EFEe674Bba42e6D67040c46A7017779971910",
+    "BiswapConnector": "0x9e7f27dEc23E38747D69dc3423FD243AcA7dd332",
+    "VenusConnector": "0xcD59A60A7244D81aeAcaFFD151125932f92b80e8",
+    "OracleManager": "0xE9DA4b6169a5A618F9055417060e75D44fBa235D"
+  },
+  "deployer": "0x5c24d44ea5c8324F71b5147D9AAc500a90526750",
+  "verified": true
+}
+
