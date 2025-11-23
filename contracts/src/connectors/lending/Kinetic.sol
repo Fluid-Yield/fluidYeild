@@ -152,9 +152,6 @@ contract KineticConnector is IConnector, Constants {
 
         uint256 shareAmountBefore = ERC20(assetOut).balanceOf(address(this));
 
-        // verify asset out before approving
-        require(_verifyAssetOut(assetOut), "incorrect spender");
-
         // approve and supply asset
         ERC20(assetIn).approve(assetOut, amountToDeposit);
         // 0=success
@@ -260,9 +257,6 @@ contract KineticConnector is IConnector, Constants {
         // transfer token from Strategy Module
         require(strategyModule.transferToken(assetsIn[0], btBalance), "not enough borrowed token");
 
-        // verify spender
-        require(_verifyAssetOut(assetsIn[2]), "incorrect spender");
-
         // repay
         ERC20(assetsIn[0]).approve(assetsIn[2], btBalance);
         require(CErc20Interface(assetsIn[2]).repayBorrow(btBalance) == 0, "repay borrow failed");
@@ -341,30 +335,27 @@ contract KineticConnector is IConnector, Constants {
         int256 _tokenBPriceInUsd;
 
         // Get tokenA price in USD
-        if (_tokenA == CBBTC) _tokenAPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, CBBTC_USD);
-        if (_tokenA == DAI) _tokenAPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, DAI_USD);
-        if (_tokenA == ETH) _tokenAPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, ETH_USD);
-        if (_tokenA == USDC) _tokenAPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, USDC_USD);
+        if (_tokenA == SFLR) _tokenAPriceInUsd = oracle.getLatestAnswer(FLR_USD_FEED);
+        if (_tokenA == BTC) _tokenAPriceInUsd = oracle.getLatestAnswer(BTC_USD_FEED);
+        if (_tokenA == ETH) _tokenAPriceInUsd = oracle.getLatestAnswer(ETH_USD_FEED);
+        if (_tokenA == USDC) _tokenAPriceInUsd = oracle.getLatestAnswer(USDC_USD_FEED);
+        if (_tokenA == USDT) _tokenAPriceInUsd = oracle.getLatestAnswer(USDT_USD_FEED);
+        if (_tokenA == USDT0) _tokenAPriceInUsd = oracle.getLatestAnswer(USDT_USD_FEED);
 
         // Get tokenB price in USD
-        if (_tokenB == CBBTC) _tokenBPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, CBBTC_USD);
-        if (_tokenB == DAI) _tokenBPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, DAI_USD);
-        if (_tokenB == ETH) _tokenBPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, ETH_USD);
-        if (_tokenB == USDC) _tokenBPriceInUsd = oracle.getLatestAnswer(SEQUENCER_UPTIME_FEED, USDC_USD);
+        if (_tokenB == SFLR) _tokenBPriceInUsd = oracle.getLatestAnswer(FLR_USD_FEED);
+        if (_tokenB == BTC) _tokenBPriceInUsd = oracle.getLatestAnswer(BTC_USD_FEED);
+        if (_tokenB == ETH) _tokenBPriceInUsd = oracle.getLatestAnswer(ETH_USD_FEED);
+        if (_tokenB == USDC) _tokenBPriceInUsd = oracle.getLatestAnswer(USDC_USD_FEED);
+        if (_tokenB == USDT) _tokenBPriceInUsd = oracle.getLatestAnswer(USDT_USD_FEED);
+        if (_tokenB == USDT0) _tokenBPriceInUsd = oracle.getLatestAnswer(USDT_USD_FEED);
 
         return (_tokenAPriceInUsd, _tokenBPriceInUsd);
     }
 
-    function _verifyAssetOut(address _assetOut) internal returns (bool) {
-        return (
-            (_assetOut == MOONWELL_USDC) || (_assetOut == MOONWELL_CBBTC) || (_assetOut == MOONWELL_WETH)
-                || (_assetOut == MOONWELL_DAI) || (_assetOut == MOONWELL_EURC)
-        );
-    }
+    // receive() external payable {
+    //     require(msg.sender == SFLR_UNWRAPPER, "not accepting eth");
 
-    receive() external payable {
-        require(msg.sender == MW_WETH_UNWRAPPER, "not accepting eth");
-
-        IWETH9(ETH).deposit{value: msg.value}();
-    }
+    //     IWETH9(SFLR).deposit{value: msg.value}();
+    // }
 }

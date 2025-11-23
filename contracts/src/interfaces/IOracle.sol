@@ -7,7 +7,7 @@ interface IOracle {
         view
         returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);
 
-    function getLatestAnswer(address _sequencerUptimeFeed, address _dataFeed) external view returns (int256);
+    function getLatestAnswer(bytes21 _dataFeed) external view returns (int256);
 
     function getTokenAPriceInTokenB(
         uint256 tokenAPriceInUsd,

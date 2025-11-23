@@ -2,39 +2,25 @@
 pragma solidity ^0.8.20;
 
 import "./interfaces/IOracle.sol";
-// import {ContractRegistry} from "@flarenetwork/flare-periphery-contracts/coston2/ContractRegistry.sol";
-// import {TestFtsoV2Interface} from "@flarenetwork/flare-periphery-contracts/coston2/TestFtsoV2Interface.sol";
 
+import {TestFtsoV2Interface} from "flare-periphery/coston2/TestFtsoV2Interface.sol";
+import {ContractRegistry} from "flare-periphery/coston2/ContractRegistry.sol";
+import {IFeeCalculator} from "flare-periphery/coston2/IFeeCalculator.sol";
 
+    
 contract Oracle {
     error SequencerDown();
     error GracePeriodNotOver();
 
     /**
      * @notice function to get the price of token in USD
-     * @param _sequencerUptimeFeed uptime feed address on base network
      * @param _dataFeed data feed address on base network
      */
-    function getLatestAnswer(address _sequencerUptimeFeed, address _dataFeed) public view returns (int256) {
-        (, int256 answer, uint256 startedAt,,) = IOracle(_sequencerUptimeFeed).latestRoundData();
+    function getLatestAnswer(bytes21 _dataFeed) public view returns (int256) {
+        TestFtsoV2Interface ftsoV2 = ContractRegistry.getTestFtsoV2();
+        (uint256 price, int8 decimals, ) = ftsoV2.getFeedById(_dataFeed);
 
-        // Answer == 0: Sequencer is up
-        // Answer == 1: Sequencer is down
-        bool isSequencerUp = answer == 0;
-        if (!isSequencerUp) {
-            revert SequencerDown();
-        }
-
-        // Make sure the grace period has passed after the
-        // sequencer is back up.
-        uint256 timeSinceUp = block.timestamp - startedAt;
-        if (timeSinceUp <= 3600 /* 1 hour */ ) {
-            revert GracePeriodNotOver();
-        }
-
-        (, int256 price,,,) = IOracle(_dataFeed).latestRoundData();
-
-        return price; // returns usd value scaled to 8 decimal
+        return int256(price) * int256(10 ** (8 - uint256(uint8(decimals)))); // returns usd value scaled to 8 decimal
     }
 
     /**
