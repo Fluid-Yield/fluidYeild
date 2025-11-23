@@ -1,14 +1,14 @@
 {
-  "network": "bsc_testnet",
-  "chainId": 97,
+  "network": "flare_custom2_testnet",
+  "chainId": 114,
   "contracts": {
-    "StrategyVault": "0xb6D77Ad52A38a3338a54aC935C0Be18F8216C900",
-    "PancakeSwapConnector": "0x7A0EFEe674Bba42e6D67040c46A7017779971910",
-    "BiswapConnector": "0x9e7f27dEc23E38747D69dc3423FD243AcA7dd332",
-    "VenusConnector": "0xcD59A60A7244D81aeAcaFFD151125932f92b80e8",
-    "OracleManager": "0xE9DA4b6169a5A618F9055417060e75D44fBa235D"
+    "Engine": "0xa5fa69050abe526c99d40ba259e11b627b7cc04f",
+    "Strategy": "0xea47826461f42166dac7ec63924f583cf14feb13",
+    "Oracle": "0xfb99509221b07bda22a65a979942faadb0de60bd",
+    "KineticConnector": "0xf5c52eb54a61ea7855347bd6d75e64e8fa14ad36",
+    "SparkDexV2Connector": "0x364bf6f9185653c1baa49e9fe487260d4e082863",
+    "SparkDexV3Connector": "0xea1d67b8ae5f558056f92f45f4c07ffcd0dab99c"
   },
-  "deployer": "0x5c24d44ea5c8324F71b5147D9AAc500a90526750",
-  "verified": true
+  "deployer": "0xd79ef8e589e551a1899681ae0ad06c37ec55f692",
+  "verified": false
 }
-
