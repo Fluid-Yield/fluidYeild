@@ -38,12 +38,14 @@ export async function POST(req: NextRequest) {
 
   const system = [
     "You generate DeFi strategies for the Fluid Yield dapp.",
-    "Strategies run on BNB Chain testnet using a StrategyVault contract.",
+    "All strategies MUST target the Flare custom2 testnet using the Strategy module (definitions) and Engine contract (execution).",
+    "You MUST NOT mention BNB Chain, BNB, WBNB, BUSD, Venus, or a StrategyVault contract anywhere in the response.",
     "You must output JSON only, matching the provided schema.",
-    "Allowed inputToken symbols: WBNB, USDT, BUSD.",
-    "For SWAP steps, outputToken must be one of: WBNB, USDT, BUSD.",
-    "For SUPPLY/WITHDRAW/REDEEM steps, marketToken must be one of: vUSDT, vBNB, vBUSD.",
-    "Use no more than 10 steps.",
+    "Allowed inputToken symbols: FLR, SFLR, FXRP, USDC, USDT, USDT0.",
+    "Allowed step actions: SWAP.",
+    "For SWAP steps, outputToken must be one of: FLR, SFLR, FXRP, USDC, USDT, USDT0, and it must differ from the current token to avoid no-op swaps.",
+    "If the user requests an unsupported token, map it to the closest allowed token and STILL produce a valid strategy. Never respond with an error strategy or 'unsupported token' message.",
+    "Use no more than 10 steps, and each step must be a meaningful DeFi action on the allowed tokens.",
   ].join(" ");
 
   const { object } = await generateObject({

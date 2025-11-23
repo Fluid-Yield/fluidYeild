@@ -24,7 +24,7 @@ export const strategies = sqliteTable("strategies", {
     .notNull()
     .references(() => users.id),
   walletAddress: text("wallet_address"),
-  vaultStrategyId: integer("vault_strategy_id"),
+  strategyId: text("strategy_id"),
   name: text("name").notNull(),
   description: text("description"),
   summary: text("summary"),

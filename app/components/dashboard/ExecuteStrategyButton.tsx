@@ -17,7 +17,7 @@ import { fyContracts } from "@/lib/contracts";
 import { useToast } from "../../components/ui/toast-provider";
 
 interface ExecuteStrategyButtonProps {
-  strategyId: number;
+  strategyId: string;
   inputToken: string;
   disabled?: boolean;
 }
@@ -36,24 +36,23 @@ export function ExecuteStrategyButton({
   const { decimals } = useTokenDecimals(inputToken as `0x${string}`);
 
   const {
-    data: rawPosition,
-    refetch: refetchPosition,
-    isLoading: positionLoading,
+    data: rawStats,
+    refetch: refetchStats,
+    isLoading: statsLoading,
   } = useReadContract({
-    abi: fyContracts.strategyVault.abi,
-    address: fyContracts.strategyVault.address,
-    functionName: "getUserPosition",
-    args: address ? [address, BigInt(strategyId)] : undefined,
+    abi: fyContracts.strategy.abi,
+    address: fyContracts.strategy.address,
+    functionName: "getUserStrategyStats",
+    args: address ? [strategyId as `0x${string}`, address] : undefined,
     query: {
       enabled: !!address,
     },
   });
 
-  type PositionTuple = readonly [string, bigint, bigint];
-  const position = rawPosition as PositionTuple | undefined;
-  const positionToken = position?.[0];
-  const positionAmount = position?.[1] ?? BigInt(0);
-  const hasPosition = positionAmount > BigInt(0);
+  type UserStatsTuple = readonly [bigint, bigint, unknown, unknown];
+  const stats = rawStats as UserStatsTuple | undefined;
+  const joinTimestamp = stats?.[0] ?? BigInt(0);
+  const hasPosition = joinTimestamp > BigInt(0);
 
   const [amountInput, setAmountInput] = useState("0.1");
   const [slippage, setSlippage] = useState<SlippageOption>("MEDIUM");
@@ -67,7 +66,7 @@ export function ExecuteStrategyButton({
     if (!isConnected || !address) {
       toast({
         description:
-          "Connect your wallet on BNB testnet to join this strategy.",
+          "Connect your wallet on Flare testnet to join this strategy.",
         variant: "error",
       });
       return;
@@ -100,8 +99,6 @@ export function ExecuteStrategyButton({
       return;
     }
 
-    const slippageValue = slippage === "LOW" ? 0 : slippage === "HIGH" ? 2 : 1;
-
     setJoining(true);
 
     try {
@@ -109,7 +106,7 @@ export function ExecuteStrategyButton({
         abi: erc20Abi,
         address: inputToken as `0x${string}`,
         functionName: "approve",
-        args: [fyContracts.strategyVault.address, amount],
+        args: [fyContracts.engine.address, amount],
       });
 
       if (publicClient) {
@@ -117,10 +114,10 @@ export function ExecuteStrategyButton({
       }
 
       const executeHash = await writeContractAsync({
-        abi: fyContracts.strategyVault.abi,
-        address: fyContracts.strategyVault.address,
-        functionName: "executeStrategy",
-        args: [BigInt(strategyId), amount, slippageValue],
+        abi: fyContracts.engine.abi,
+        address: fyContracts.engine.address,
+        functionName: "join",
+        args: [strategyId as `0x${string}`, fyContracts.strategy.address, [amount]],
       });
 
       if (publicClient) {
@@ -129,7 +126,7 @@ export function ExecuteStrategyButton({
         });
         console.log("[receipt]: ", receipt);
         if (receipt.status === "success") {
-          await refetchPosition();
+          await refetchStats();
           toast({
             title: "Joined strategy",
             description: "Join transaction confirmed.",
@@ -157,7 +154,7 @@ export function ExecuteStrategyButton({
     if (!isConnected || !address) {
       toast({
         description:
-          "Connect your wallet on BNB testnet to exit this strategy.",
+          "Connect your wallet on Flare testnet to exit this strategy.",
         variant: "error",
       });
       return;
@@ -175,17 +172,17 @@ export function ExecuteStrategyButton({
 
     try {
       const exitHash = await writeContractAsync({
-        abi: fyContracts.strategyVault.abi,
-        address: fyContracts.strategyVault.address,
-        functionName: "exitStrategy",
-        args: [BigInt(strategyId)],
+        abi: fyContracts.engine.abi,
+        address: fyContracts.engine.address,
+        functionName: "exit",
+        args: [strategyId as `0x${string}`, fyContracts.strategy.address],
       });
 
       if (publicClient) {
         await publicClient.waitForTransactionReceipt({ hash: exitHash });
       }
 
-      await refetchPosition();
+      await refetchStats();
 
       toast({
         title: "Exited strategy",
@@ -204,13 +201,11 @@ export function ExecuteStrategyButton({
   };
 
   const formattedPositionAmount =
-    hasPosition && !positionLoading
-      ? formatUnits(positionAmount, decimals)
-      : null;
+    hasPosition && !statsLoading ? joinTimestamp.toString() : null;
 
   const joinDisabled =
-    disabled || joining || exiting || isPending || positionLoading;
-  const exitDisabled = joining || exiting || isPending || positionLoading;
+    disabled || joining || exiting || isPending || statsLoading;
+  const exitDisabled = joining || exiting || isPending || statsLoading;
 
   return (
     <div className="flex flex-col items-stretch gap-3 w-full sm:w-auto">
@@ -270,15 +265,10 @@ export function ExecuteStrategyButton({
 
       {address && (
         <div className="text-[11px] sm:text-[12px] text-muted-foreground">
-          {positionLoading ? (
+          {statsLoading ? (
             "Loading current position..."
-          ) : hasPosition && formattedPositionAmount && positionToken ? (
-            <>
-              Current position: {formattedPositionAmount} at
-              <span className="ml-1 font-mono text-xs">
-                {positionToken.slice(0, 6)}...{positionToken.slice(-4)}
-              </span>
-            </>
+          ) : hasPosition ? (
+            "You have an open position in this strategy."
           ) : (
             "No open position in this strategy."
           )}

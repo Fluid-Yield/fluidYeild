@@ -15,11 +15,10 @@ const client = createPublicClient({
 });
 
 export interface StrategyOverview {
-  id: number;
+  id: string;
   name: string;
   curator: string;
   inputToken: string;
-  active: boolean;
   stepCount: number;
   ai?: {
     description: string | null;
@@ -29,55 +28,62 @@ export interface StrategyOverview {
 }
 
 export async function getAllStrategiesWithAi(): Promise<StrategyOverview[]> {
-  const activeIds = (await client.readContract({
-    abi: fyContracts.strategyVault.abi,
-    address: fyContracts.strategyVault.address,
-    functionName: "getActiveStrategies",
-  })) as readonly bigint[];
+  const allStrategies = (await client.readContract({
+    abi: fyContracts.strategy.abi,
+    address: fyContracts.strategy.address,
+    functionName: "getAllStrategies",
+  })) as readonly {
+    strategyId: `0x${string}`;
+    curator: `0x${string}`;
+    name: string;
+    strategyDescription: string;
+    steps: readonly {
+      connector: `0x${string}`;
+      actionType: bigint;
+      assetsIn: readonly `0x${string}`[];
+      assetOut: `0x${string}`;
+      amountRatio: bigint;
+      data: `0x${string}`;
+    }[];
+    minDeposit: bigint;
+  }[];
 
-  if (!activeIds.length) return [];
+  if (!allStrategies.length) return [];
 
-  const onchain = await Promise.all(
-    activeIds.map(async (idBn) => {
-      const [name, curator, inputToken, active, stepCount] =
-        (await client.readContract({
-          abi: fyContracts.strategyVault.abi,
-          address: fyContracts.strategyVault.address,
-          functionName: "getStrategy",
-          args: [idBn],
-        })) as [string, string, string, boolean, bigint];
+  const onchain = allStrategies.map((s) => {
+    const firstStep = s.steps[0];
+    const inputToken = firstStep?.assetsIn[0] ??
+      "0x0000000000000000000000000000000000000000";
 
-      return {
-        id: Number(idBn),
-        name,
-        curator,
-        inputToken,
-        active,
-        stepCount: Number(stepCount),
-      } satisfies StrategyOverview;
-    })
-  );
+    return {
+      id: s.strategyId,
+      name: s.name,
+      curator: s.curator,
+      inputToken,
+      stepCount: s.steps.length,
+    } satisfies StrategyOverview;
+  });
 
-  const vaultIds = onchain.map((s) => s.id);
+  const strategyIds = onchain.map((s) => s.id);
 
-  if (!vaultIds.length) return onchain;
+  if (!strategyIds.length) return onchain;
 
   const aiRows = await db
     .select()
     .from(strategies)
-    .where(inArray(strategies.vaultStrategyId, vaultIds));
+    .where(inArray(strategies.strategyId, strategyIds));
 
-  const byVaultId = new Map<number, (typeof aiRows)[number]>();
+  const byId = new Map<string, (typeof aiRows)[number]>();
 
   for (const row of aiRows) {
-    if (row.vaultStrategyId == null) continue;
-    if (!byVaultId.has(row.vaultStrategyId)) {
-      byVaultId.set(row.vaultStrategyId, row);
+    if (!row.strategyId) continue;
+    if (!byId.has(row.strategyId)) {
+      byId.set(row.strategyId, row);
     }
   }
 
   return onchain.map((s) => {
-    const meta = byVaultId.get(s.id);
+    const meta = byId.get(s.id);
     return {
       ...s,
       ai: meta
@@ -115,46 +121,26 @@ export async function getUserStrategiesByUserId(userId: string | null) {
   const addresses = walletRows
     .map((w) => w.address)
     .filter((a): a is `0x${string}` => !!a) as `0x${string}`[];
+  const addressSet = new Set(addresses.map((a) => a.toLowerCase()));
 
-  const createdIdSet = new Set<number>();
+  const created = all.filter((s) =>
+    addressSet.has(s.curator.toLowerCase())
+  );
+
+  const joinedIdSet = new Set<string>();
 
   for (const addr of addresses) {
     const ids = (await client.readContract({
-      abi: fyContracts.strategyVault.abi,
-      address: fyContracts.strategyVault.address,
-      functionName: "getStrategiesByCurator",
+      abi: fyContracts.strategy.abi,
+      address: fyContracts.strategy.address,
+      functionName: "getUserStrategies",
       args: [addr],
-    })) as readonly bigint[];
+    })) as readonly `0x${string}`[];
 
-    ids.forEach((idBn) => createdIdSet.add(Number(idBn)));
+    ids.forEach((id) => joinedIdSet.add(id.toLowerCase()));
   }
 
-  const created = all.filter((s) => createdIdSet.has(s.id));
-
-  const activeIds = (await client.readContract({
-    abi: fyContracts.strategyVault.abi,
-    address: fyContracts.strategyVault.address,
-    functionName: "getActiveStrategies",
-  })) as readonly bigint[];
-
-  const joinedIdSet = new Set<number>();
-
-  for (const addr of addresses) {
-    for (const idBn of activeIds) {
-      const [, amount] = (await client.readContract({
-        abi: fyContracts.strategyVault.abi,
-        address: fyContracts.strategyVault.address,
-        functionName: "getUserPosition",
-        args: [addr, idBn],
-      })) as [string, bigint, bigint];
-
-      if (amount > BigInt(0)) {
-        joinedIdSet.add(Number(idBn));
-      }
-    }
-  }
-
-  const joined = all.filter((s) => joinedIdSet.has(s.id));
+  const joined = all.filter((s) => joinedIdSet.has(s.id.toLowerCase()));
 
   return { created, joined };
 }
@@ -191,7 +177,7 @@ export interface StrategyDetail {
 }
 
 export async function getStrategyDetail(
-  id: number
+  id: string
 ): Promise<StrategyDetail | null> {
   const all = await getAllStrategiesWithAi();
   const base = all.find((s) => s.id === id);
@@ -201,7 +187,7 @@ export async function getStrategyDetail(
   const rows = await db
     .select()
     .from(strategies)
-    .where(eq(strategies.vaultStrategyId, id))
+    .where(eq(strategies.strategyId, id))
     .limit(1);
 
   const row = rows[0];

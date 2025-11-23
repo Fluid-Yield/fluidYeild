@@ -20,13 +20,11 @@ export default async function StrategyDetailPage({
 }: StrategyPageProps) {
   const { slug } = await params;
 
-  const id = Number(slug);
-
-  if (!Number.isFinite(id)) {
+  if (!slug || typeof slug !== "string" || !slug.startsWith("0x")) {
     notFound();
   }
 
-  const detail = await getStrategyDetail(id);
+  const detail = await getStrategyDetail(slug);
 
   if (!detail) {
     notFound();

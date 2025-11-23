@@ -77,7 +77,7 @@ export default function CreateStrategyPage() {
     if (!isConnected || !address) {
       toast({
         description:
-          "Connect your wallet on BNB testnet to deploy the strategy.",
+          "Connect your wallet on Flare testnet to deploy the strategy.",
         variant: "error",
       });
       return;
@@ -89,10 +89,10 @@ export default function CreateStrategyPage() {
       const steps = buildStepsFromAi(aiStrategy);
 
       const hash = await writeContractAsync({
-        abi: fyContracts.strategyVault.abi,
-        address: fyContracts.strategyVault.address,
+        abi: fyContracts.strategy.abi,
+        address: fyContracts.strategy.address,
         functionName: "createStrategy",
-        args: [aiStrategy.name, token.address, steps],
+        args: [aiStrategy.name, aiStrategy.description, steps, BigInt(0)],
       });
 
       if (publicClient) {
@@ -107,29 +107,30 @@ export default function CreateStrategyPage() {
           return;
         }
 
-        let vaultStrategyId: number | null = null;
+        let strategyId: `0x${string}` | null = null;
 
         for (const log of receipt.logs) {
           if (
             log.address.toLowerCase() !==
-            fyContracts.strategyVault.address.toLowerCase()
+            fyContracts.strategy.address.toLowerCase()
           ) {
             continue;
           }
 
           try {
             const decoded = decodeEventLog({
-              abi: fyContracts.strategyVault.abi,
+              abi: fyContracts.strategy.abi,
               data: log.data,
               topics: log.topics,
             });
             console.log("[decoded]: ", decoded);
 
-            if (decoded.eventName === "StrategyCreated") {
-              const id = (decoded.args as unknown as { strategyId: bigint })
-                ?.strategyId;
-              if (id != null) {
-                vaultStrategyId = Number(id);
+            if (decoded.eventName === "CreateStrategy") {
+              const id = (decoded.args as unknown as {
+                strategyId?: `0x${string}`;
+              })?.strategyId;
+              if (id) {
+                strategyId = id;
                 break;
               }
             }
@@ -138,12 +139,12 @@ export default function CreateStrategyPage() {
           }
         }
 
-        if (vaultStrategyId != null) {
+        if (strategyId != null) {
           const res = await fetch("/api/strategies/create-from-ai", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              vaultStrategyId,
+              strategyId,
               prompt,
               strategy: aiStrategy,
             }),
@@ -158,7 +159,7 @@ export default function CreateStrategyPage() {
             description: "Strategy deployed successfully.",
             variant: "success",
           });
-          router.push(`/dashboard/strategies/${vaultStrategyId}`);
+          router.push(`/dashboard/strategies/${strategyId}`);
         }
       }
     } catch {
@@ -182,7 +183,7 @@ export default function CreateStrategyPage() {
             </h1>
             <p className="mt-3 sm:mt-4 text-[14px] sm:text-[16px] text-[#4A6B6E]">
               Describe the strategy you want. Fluid Yield will turn it into
-              executable steps on flare.
+              executable steps on Flare using on-chain connectors.
             </p>
           </div>
 
@@ -215,7 +216,7 @@ export default function CreateStrategyPage() {
             <textarea
               rows={5}
               className="rounded-xl sm:rounded-2xl border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-5 py-3 sm:py-4 text-[14px] sm:text-[15px] text-[#1A1A1A] placeholder:text-[#6B8A8D] focus:border-accent focus:outline-none focus:ring-0 resize-none"
-              placeholder="E.g. A medium-risk looping strategy using WBNB as input, swapping into USDT then supplying to Venus, with auto-withdraw to BUSD when markets are volatile."
+              placeholder="E.g. A medium-risk strategy using FLR as input, swapping into USDC then back to FLR using SparkDex, with clear explanation of why each swap is made."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
             />
@@ -229,8 +230,8 @@ export default function CreateStrategyPage() {
                 </span>
               ) : (
                 <span>
-                  Fluid Yield will infer tokens, Venus markets, and steps based
-                  on your description.
+                  Fluid Yield will infer Flare tokens, connectors, and steps
+                  based on your description.
                 </span>
               )}
             </div>

@@ -1,53 +1,70 @@
 import { encodeAbiParameters } from "viem";
 
-import { TOKENS, VTOKENS, TokenKey, VTokenKey } from "./tokens";
+import { TOKENS, TokenKey } from "./tokens";
 import { StrategyFromAi } from "./strategy-model";
+import { fyContracts } from "./contracts";
 
-export enum ActionOrdinal {
-  SWAP = 0,
-  SUPPLY = 1,
-  BORROW = 2,
-  WITHDRAW = 3,
-  REDEEM = 4,
-}
+const SWAP_ACTION_TYPE = 6;
+const MAX_BPS = 10_000;
 
-export function buildStepsFromAi(strategy: StrategyFromAi) {
-  return strategy.steps.map((step) => {
-    if (step.action === "SWAP") {
-      const key = step.outputToken as TokenKey;
-      const token = TOKENS[key];
+export type EncodedStep = {
+  connector: `0x${string}`;
+  actionType: number;
+  assetsIn: `0x${string}`[];
+  assetOut: `0x${string}`;
+  amountRatio: bigint;
+  data: `0x${string}`;
+};
 
-      if (!token) {
-        throw new Error(`Unknown outputToken ${step.outputToken}`);
-      }
+export function buildStepsFromAi(strategy: StrategyFromAi): EncodedStep[] {
+  const inputKey = strategy.inputToken as TokenKey;
+  const input = TOKENS[inputKey];
 
-      const params = encodeAbiParameters(
-        [{ name: "tokenOut", type: "address" }],
-        [token.address]
-      );
+  if (!input) {
+    throw new Error(`Unknown inputToken ${strategy.inputToken}`);
+  }
 
-      return { action: ActionOrdinal.SWAP, params };
+  const connector = fyContracts.connectors.sparkDexV2.address;
+
+  let currentTokenAddress = input.address;
+  const steps: EncodedStep[] = [];
+
+  for (const step of strategy.steps) {
+    const outKey = step.outputToken as TokenKey;
+    const outToken = TOKENS[outKey];
+
+    if (!outToken) {
+      throw new Error(`Unknown outputToken ${step.outputToken}`);
     }
 
-    const vKey = step.marketToken as VTokenKey;
-    const vToken = VTOKENS[vKey];
-
-    if (!vToken) {
-      throw new Error(`Unknown marketToken ${step.marketToken}`);
+    if (outToken.address.toLowerCase() === currentTokenAddress.toLowerCase()) {
+      continue;
     }
 
-    const action =
-      step.action === "SUPPLY"
-        ? ActionOrdinal.SUPPLY
-        : step.action === "WITHDRAW"
-        ? ActionOrdinal.WITHDRAW
-        : ActionOrdinal.REDEEM;
+    const path = [currentTokenAddress, outToken.address];
+    const minAmountOut = BigInt(0);
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 60);
 
-    const params = encodeAbiParameters(
-      [{ name: "marketToken", type: "address" }],
-      [vToken.address]
+    const data = encodeAbiParameters(
+      [
+        { name: "path", type: "address[]" },
+        { name: "minAmountOut", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+      [path, minAmountOut, deadline]
     );
 
-    return { action, params };
-  });
+    steps.push({
+      connector,
+      actionType: SWAP_ACTION_TYPE,
+      assetsIn: [currentTokenAddress],
+      assetOut: outToken.address,
+      amountRatio: BigInt(MAX_BPS),
+      data,
+    });
+
+    currentTokenAddress = outToken.address;
+  }
+
+  return steps;
 }

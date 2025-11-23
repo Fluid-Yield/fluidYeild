@@ -16,11 +16,11 @@ export async function POST(req: NextRequest) {
   await ensureUser(userId);
 
   const body = await req.json();
-  const vaultStrategyId = body?.vaultStrategyId as number | undefined;
+  const strategyId = body?.strategyId as string | undefined;
   const prompt = body?.prompt as string | undefined;
   const strategyJson = body?.strategy;
 
-  if (!vaultStrategyId || !prompt || !strategyJson) {
+  if (!strategyId || !prompt || !strategyJson) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     .insert(strategies)
     .values({
       userId,
-      vaultStrategyId,
+      strategyId,
       name: strategy.name,
       description: strategy.description,
       summary: strategy.summary,

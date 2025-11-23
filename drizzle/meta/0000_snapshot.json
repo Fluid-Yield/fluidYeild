@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "846073de-eb71-4d1d-af94-397db798d5e7",
+  "id": "17af49aa-00df-42e6-97ae-99dcc9a56119",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "chat_messages": {
@@ -74,9 +74,9 @@
           "notNull": false,
           "autoincrement": false
         },
-        "vault_strategy_id": {
-          "name": "vault_strategy_id",
-          "type": "integer",
+        "strategy_id": {
+          "name": "strategy_id",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

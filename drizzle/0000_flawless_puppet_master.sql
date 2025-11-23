@@ -10,7 +10,7 @@ CREATE TABLE `strategies` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` text NOT NULL,
 	`wallet_address` text,
-	`vault_strategy_id` integer,
+	`strategy_id` text,
 	`name` text NOT NULL,
 	`description` text,
 	`summary` text,
