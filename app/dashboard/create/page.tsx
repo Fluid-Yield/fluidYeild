@@ -214,7 +214,7 @@ export default function CreateStrategyPage() {
             </span>
             <textarea
               rows={5}
-              className="rounded-xl sm:rounded-2xl border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-5 py-3 sm:py-4 text-[14px] sm:text-[15px] text-[#1A1A1A] placeholder:text-[#6B8A8D] focus:border-[#1FE9F7] focus:outline-none focus:ring-0 resize-none"
+              className="rounded-xl sm:rounded-2xl border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-5 py-3 sm:py-4 text-[14px] sm:text-[15px] text-[#1A1A1A] placeholder:text-[#6B8A8D] focus:border-accent focus:outline-none focus:ring-0 resize-none"
               placeholder="E.g. A medium-risk looping strategy using WBNB as input, swapping into USDT then supplying to Venus, with auto-withdraw to BUSD when markets are volatile."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -260,21 +260,21 @@ export default function CreateStrategyPage() {
                 </p>
               </div>
 
-              <div className="space-y-3 sm:space-y-4 rounded-2xl border border-[#EDFCFE0F] bg-[#070B0B] px-4 sm:px-5 py-4 sm:py-5">
-                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#B8D4D7]">
+              <div className="space-y-3 sm:space-y-4 rounded-2xl border border-accent/70 bg-white shadow-lg px-4 sm:px-5 py-4 sm:py-5">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] ">
                   Deployment Details
                 </p>
-                <div className="space-y-1 text-[13px] sm:text-[14px] text-[#E7FDFF]">
+                <div className="space-y-1 text-[13px] sm:text-[14px] ">
                   <p>
-                    <span className="text-[#B8D4D7]">Input Token:</span>{" "}
+                    <span className="font-semibold">Input Token:</span>{" "}
                     {aiStrategy.inputToken}
                   </p>
                   <p>
-                    <span className="text-[#B8D4D7]">Risk:</span>{" "}
+                    <span className="font-semibold">Risk:</span>{" "}
                     {aiStrategy.riskLevel}
                   </p>
                   <p>
-                    <span className="text-[#B8D4D7]">Steps:</span>{" "}
+                    <span className="font-semibold">Steps:</span>{" "}
                     {aiStrategy.steps.length}
                   </p>
                 </div>
@@ -282,7 +282,7 @@ export default function CreateStrategyPage() {
                 <Button
                   type="button"
                   variant="default"
-                  className="mt-2 text-xs sm:text-sm font-medium text-[#090909] bg-[#1FE9F7] hover:bg-[#1FE9F7]/80 rounded-lg px-6 sm:px-10 py-3 sm:py-4 text-center cursor-pointer w-full"
+                  className="mt-2 text-xs sm:text-sm font-medium text-white bg-accent hover:bg-accent/90 rounded-lg px-6 sm:px-10 py-3 sm:py-4 text-center cursor-pointer w-full"
                   onClick={handleDeploy}
                   disabled={deploying || isPending}
                 >
@@ -299,8 +299,10 @@ export default function CreateStrategyPage() {
                 <ol className="space-y-1 text-[13px] sm:text-[14px] text-[#1A1A1A]">
                   {aiStrategy.steps.map((step, index) => (
                     <li key={index}>
-                      <span className="text-[#4A6B6E] mr-2">{index + 1}.</span>
-                      <span className="uppercase text-[11px] tracking-[0.16em] text-[#0A9BA0] mr-2">
+                      <span className="text-accent-foreground mr-2">
+                        {index + 1}.
+                      </span>
+                      <span className="uppercase text-[11px] font-semibold tracking-[0.16em] text-accent-foreground mr-2">
                         {step.action}
                       </span>
                       {step.label ?? "Generated step"}
