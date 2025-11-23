@@ -10,6 +10,9 @@ import {Engine} from "../src/engine.sol";
 
 // connectors
 import {KineticConnector} from "../src/connectors/lending/Kinetic.sol";
+import {SparkDexV2Connector} from "../src/connectors/dex/SparkDex/v2.sol";
+import {SparkDexV3Connector} from "../src/connectors/dex/SparkDex/v3.sol";
+
 
 contract DeployScript is Script {
     function run() external {
@@ -21,10 +24,23 @@ contract DeployScript is Script {
 
         Oracle oracle = new Oracle();
 
+        address SparkDexV2Router = address(0x1234567890123456789012345678901234567890); // Todo: find testnet router address
+        address SparkDexV3Router = address(0x1234567890123456789012345678901234567891); // Todo: find testnet router address
+
         KineticConnector kineticConnector = new KineticConnector(
             "Kinetic Connector", IConnector.ConnectorType.LENDING, address(strategy), address(engine), address(oracle)
+        );
+
+        SparkDexV2Connector sparkDexV2Connector = new SparkDexV2Connector(
+            "SparkDex V2 Connector", IConnector.ConnectorType.DEX, address(strategy), address(engine), address(oracle), SparkDexV2Router
+        );
+
+        SparkDexV3Connector sparkDexV3Connector = new SparkDexV3Connector(
+            "SparkDex V3 Connector", IConnector.ConnectorType.DEX, address(strategy), address(engine), address(oracle), SparkDexV3Router
         );
 
         vm.stopBroadcast();
     }
 }
+
+
